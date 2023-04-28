@@ -11,7 +11,7 @@ function App() {
   const [editUser, setEditUser] = useState<IUser | undefined>();
   const [searchTerm, setSearchTerm] = useState('');
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm)
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   console.log('app', users);
 
@@ -33,9 +33,25 @@ function App() {
     }
   };
 
-  const sortAscending = () => {};
+  const sortAscending = () => {
+    const usersCopy = [...users];
+    usersCopy.sort((user1, user2) => {
+      if (user1.name < user2.name) return -1;
+      else if (user1.name > user2.name) return 1;
+      else return 0;
+    });
+    setUsers(usersCopy);
+  };
 
-  const sortDescending = () => {};
+  const sortDescending = () => {
+    const usersCopy = [...users];
+    usersCopy.sort((user1, user2) => {
+      if (user1.name < user2.name) return 1;
+      else if (user1.name > user2.name) return -1;
+      else return 0;
+    });
+    setUsers(usersCopy);
+  };
 
   useEffect(() => {
     getUsers();
@@ -58,7 +74,7 @@ function App() {
             name='search'
             placeholder='Search user by name'
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button className='btn' onClick={sortAscending}>
             Sort (A - Z)
