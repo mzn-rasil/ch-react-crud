@@ -1,0 +1,53 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.table-heading {
+  padding-inline: 4em;
+  padding-block: 2em;
+}
+
+.btn {
+  background: white;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.btn:hover {
+  background: #aaa;
+}
+
+.form-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.form-field {
+  text-align: left;
+}
+
+label {
+  font-weight: 500;
+}
+
+input {
+  border: none;
+  border-bottom: 1px solid black;
+  padding: 5px;
+}
+
+input:focus {
+  outline: none;
+  border-width: 2px;
+}
+
+input::placeholder {
+  color: #aaa;
+  font-size: 0.8rem;
+}
