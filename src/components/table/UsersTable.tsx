@@ -1,5 +1,6 @@
 import React, { SetStateAction, Dispatch } from 'react';
-import axios from 'axios';
+import { remove } from '../../services/UserServices';
+import UserRow from './UserRow';
 
 export interface IUser {
   id: number;
@@ -11,6 +12,16 @@ export interface IUser {
   phone: string;
 }
 
+const Columns = [
+  'UID',
+  'Name',
+  'Email',
+  'Address',
+  'Phone',
+  'Delete',
+  'Edit',
+] as const;
+
 type UsersTableProps = {
   users: IUser[];
   setUsers: Dispatch<SetStateAction<IUser[]>>;
@@ -18,10 +29,9 @@ type UsersTableProps = {
 };
 
 const UsersTable: React.FC<UsersTableProps> = ({ users, setUsers, onEdit }) => {
-  console.log('table', users);
   const deleteHandler = async (id: number) => {
     try {
-      await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
+      remove(id);
       const filteredData = users.filter((user: IUser) => user.id !== id);
       setUsers(filteredData);
       alert(`Deleted user with id: ${id}`);
@@ -34,36 +44,26 @@ const UsersTable: React.FC<UsersTableProps> = ({ users, setUsers, onEdit }) => {
     <table>
       <thead>
         <tr style={{ fontWeight: 'bold' }}>
-          <td className='table-heading'>UID</td>
-          <td className='table-heading'>Name</td>
-          <td className='table-heading'>Email</td>
-          <td className='table-heading'>Address</td>
-          <td className='table-heading'>Phone</td>
-          <td className='table-heading'>Delete</td>
-          <td className='table-heading'>Edit</td>
+          {Columns.map((column, index) => (
+            <td key={index} className='table-heading'>
+              {column}
+            </td>
+          ))}
         </tr>
       </thead>
 
       <tbody>
         {users.length > 0 ? (
           users.map((user: IUser) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.address.city}</td>
-              <td>{user.phone}</td>
-              <td>
-                <button className='btn' onClick={() => deleteHandler(user.id)}>
-                  Delete
-                </button>
-              </td>
-              <td>
-                <button className='btn' onClick={() => onEdit(user.id)}>
-                  Edit
-                </button>
-              </td>
-            </tr>
+            <UserRow
+              id={user.id}
+              name={user.name}
+              email={user.email}
+              address={user.address.city}
+              phone={user.phone}
+              onDelete={deleteHandler}
+              onEdit={onEdit}
+            />
           ))
         ) : (
           <tr style={{ textAlign: 'center', fontWeight: 'bold' }}>
