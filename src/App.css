@@ -1,13 +1,8 @@
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
-
-.table-heading {
-  padding-inline: 4em;
-  padding-block: 2em;
 }
 
 .btn {
@@ -22,9 +17,11 @@
 
 .form-wrapper {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1em;
+  /* justify-content: space-between;
+  align-items: center; */
   margin-bottom: 4rem;
 }
 
@@ -50,4 +47,26 @@ input:focus {
 input::placeholder {
   color: #aaa;
   font-size: 0.8rem;
+}
+
+table {
+  margin-top: 1.5em;
+  border-collapse: collapse;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+}
+
+thead tr td {
+  background-color: #eee;
+  padding-block: 1rem;
+  padding-inline: 4rem;
+}
+
+td {
+  padding-block: 0.3rem;
+  padding-inline: 1rem;
 }

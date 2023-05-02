@@ -1,5 +1,5 @@
 import http from '../axios/http-common';
-import { IUser } from '../components/UsersTable';
+import { IUser } from '../components/table/UsersTable';
 
 const getAll = async () => {
   try {

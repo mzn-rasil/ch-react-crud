@@ -1,21 +1,18 @@
 import React from 'react';
+import { IUser } from './UsersTable';
 
-type UserRowProps = {
-  id: number;
-  name: string;
-  email: string;
-  address: string;
-  phone: string;
+interface IUserRow extends IUser {
   onDelete: (id: number) => void;
   onEdit: (id: number) => void;
-};
+}
 
-const UserRow: React.FC<UserRowProps> = ({
+const UserRow: React.FC<IUserRow> = ({
   id,
   name,
   email,
   address,
   phone,
+  hobbies,
   onDelete,
   onEdit,
 }) => {
@@ -24,8 +21,11 @@ const UserRow: React.FC<UserRowProps> = ({
       <td>{id}</td>
       <td>{name}</td>
       <td>{email}</td>
-      <td>{address}</td>
+      <td>{address.city}</td>
       <td>{phone}</td>
+      <td>
+        {hobbies ? hobbies.map((hobby) => hobby.value).join(', ') : '---'}
+      </td>
       <td>
         <button className='btn' onClick={() => onDelete(id)}>
           Delete
