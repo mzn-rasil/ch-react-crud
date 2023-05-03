@@ -1,6 +1,6 @@
 import { Container, Grid, GridItem } from '@chakra-ui/react';
 import React from 'react';
-import Sidebar from '../components/sidebar/Sidebar';
+import Sidebar from '../sidebar/Sidebar';
 
 type UserLayoutProps = {
   children: React.ReactNode | React.ReactNode[];

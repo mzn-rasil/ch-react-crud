@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { remove } from '../../services/UserServices';
-import { UsersContext } from '../context/usersContext';
+import { UsersContext } from '../../context/usersContext';
 import { toast } from 'react-toastify';
 
 type UserRowProps = IUser & {

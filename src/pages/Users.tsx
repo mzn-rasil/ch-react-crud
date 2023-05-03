@@ -1,9 +1,9 @@
 import { Divider } from '@chakra-ui/react';
 import { useContext } from 'react';
-import { UsersContext } from '../components/context/usersContext';
+import { UsersContext } from '../context/usersContext';
 import SearchAndSort from '../components/table/SearchAndSort';
 import UsersTable from '../components/table/UsersTable';
-import UserLayout from '../layout/UserLayout';
+import UserLayout from '../components/layout/UserLayout';
 
 const Users: React.FC = () => {
   const { searchTerm, users, filteredUsers } = useContext(UsersContext);

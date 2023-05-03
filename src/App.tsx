@@ -2,7 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Users from './pages/Users';
 import UserForm from './pages/UserForm';
-import UsersContextProvider from './components/context/usersContext';
+import UsersContextProvider from './context/usersContext';
 
 function App() {
   return (

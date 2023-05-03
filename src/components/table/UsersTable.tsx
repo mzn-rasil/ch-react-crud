@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import UserRow from './UserRow';
-import { UsersContext } from '../context/usersContext';
+import { UsersContext } from '../../context/usersContext';
 
 export interface IUser {
   id: number;

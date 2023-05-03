@@ -1,7 +1,7 @@
 import { Button, Flex, HStack, Icon, Input, Spacer } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { RepeatIcon } from '@chakra-ui/icons';
-import { UsersContext } from '../context/usersContext';
+import { UsersContext } from '../../context/usersContext';
 
 enum Order {
   'asc' = 'asc',

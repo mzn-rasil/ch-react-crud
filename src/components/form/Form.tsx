@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { UsersContext, defaultUser } from '../context/usersContext';
+import { UsersContext, defaultUser } from '../../context/usersContext';
 import FormInput from './FormInput';
 import HobbiesFormInput from './HobbiesFormInput';
 import { IUser } from '../table/UsersTable';

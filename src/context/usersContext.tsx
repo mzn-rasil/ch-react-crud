@@ -5,8 +5,8 @@ import {
   SetStateAction,
   Dispatch,
 } from 'react';
-import { IUser } from '../table/UsersTable';
-import { getAll } from '../../services/UserServices';
+import { IUser } from '../components/table/UsersTable';
+import { getAll } from '../services/UserServices';
 import { useNavigate } from 'react-router-dom';
 
 type IResponseUser = Omit<IUser, 'address'> & {
