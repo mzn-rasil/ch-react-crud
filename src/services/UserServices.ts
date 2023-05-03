@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import http from '../axios/http-common';
 import { IUser } from '../components/table/UsersTable';
 
@@ -5,8 +6,8 @@ const getAll = async () => {
   try {
     const res = await http.get('/users');
     return res.data;
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error) {
+    throw new Error((error as AxiosError).message);
   }
 };
 

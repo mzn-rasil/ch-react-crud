@@ -1,72 +1,72 @@
-#root {
-  /* max-width: 1280px; */
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
+/* #root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+  }
 
-.btn {
-  background: white;
-  border: 1px solid black;
-  border-radius: 10px;
-}
+  .btn {
+    background: white;
+    border: 1px solid black;
+    border-radius: 10px;
+  }
 
-.btn:hover {
-  background: #aaa;
-}
+  .btn:hover {
+    background: #aaa;
+  }
 
-.form-wrapper {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1em;
-  /* justify-content: space-between;
-  align-items: center; */
-  margin-bottom: 4rem;
-}
+  .form-wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1em;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4rem;
+  }
 
-.form-field {
-  text-align: left;
-}
+  .form-field {
+    text-align: left;
+  }
 
-label {
-  font-weight: 500;
-}
+  label {
+    font-weight: 500;
+  }
 
-input {
-  border: none;
-  border-bottom: 1px solid black;
-  padding: 5px;
-}
+  input {
+    border: none;
+    border-bottom: 1px solid black;
+    padding: 5px;
+  }
 
-input:focus {
-  outline: none;
-  border-width: 2px;
-}
+  input:focus {
+    outline: none;
+    border-width: 2px;
+  }
 
-input::placeholder {
-  color: #aaa;
-  font-size: 0.8rem;
-}
+  input::placeholder {
+    color: #aaa;
+    font-size: 0.8rem;
+  }
 
-table {
-  margin-top: 1.5em;
-  border-collapse: collapse;
-}
+  table {
+    margin-top: 1.5em;
+    border-collapse: collapse;
+  }
 
-table,
-th,
-td {
-  border: 1px solid black;
-}
+  table,
+  th,
+  td {
+    border: 1px solid black;
+  }
 
-thead tr td {
-  background-color: #eee;
-  padding-block: 1rem;
-  padding-inline: 4rem;
-}
+  thead tr td {
+    background-color: #eee;
+    padding-block: 1rem;
+    padding-inline: 4rem;
+  }
 
-td {
-  padding-block: 0.3rem;
-  padding-inline: 1rem;
-}
+  td {
+    padding-block: 0.3rem;
+    padding-inline: 1rem;
+  } */

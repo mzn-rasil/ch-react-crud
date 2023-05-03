@@ -1,255 +1,156 @@
-import { SetStateAction, useState, Dispatch, useEffect } from 'react';
+import { Box, Button } from '@chakra-ui/react';
+import { useContext } from 'react';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import { UsersContext, defaultUser } from '../context/usersContext';
+import FormInput from './FormInput';
+import HobbiesFormInput from './HobbiesFormInput';
 import { IUser } from '../table/UsersTable';
 import { create, update } from '../../services/UserServices';
-import Input from './Input';
-import { toast } from 'react-toastify';
 
 let id = 11; // for assigning new id to users
 
-interface FormProps {
-  setUsers: Dispatch<SetStateAction<IUser[]>>;
-  editUser: IUser | undefined;
-}
+const schema = yup.object().shape({
+  username: yup
+    .string()
+    .required('Username is required')
+    .min(3, 'Must be more than 3 characters')
+    .max(25, 'Must be less than 25 characters'),
+  email: yup
+    .string()
+    .required('Email is required')
+    .email('Please enter a valid email'),
+  address: yup.string().required('Address is required'),
+  phone: yup
+    .string()
+    .required('Phone number is required')
+    .matches(/^$/, 'Match format 984-xxxxxxx'),
+});
 
-const Form: React.FC<FormProps> = ({ setUsers, editUser }) => {
-  const [username, setUsername] = useState('');
-  const [usernameError, setUsernameError] = useState('');
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [address, setAddress] = useState('');
-  const [addressError, setAddressError] = useState('');
-  const [phone, setPhone] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  const [hobbies, setHobbies] = useState([{ id: 1, value: '' }]);
+const initialValues = {
+  username: '',
+  email: '',
+  address: '',
+  phone: '',
+  hobbies: [
+    {
+      id: 1,
+      value: '',
+    },
+  ],
+};
 
-  const hasValidationError = (user: IUser): boolean => {
-    const emailRegex =
-      /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$/;
+const Form: React.FC = () => {
+  const { setUsers, editUser, setEditUser } = useContext(UsersContext);
+  const editUserExists = Object.values(editUser).every((prop) => !!prop);
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<IUser>({
+    defaultValues: editUserExists ? editUser : initialValues,
+    resolver: yupResolver(schema),
+  });
+  console.log(errors);
+  const {
+    fields: hobbies,
+    append: onAddHobby,
+    remove: onRemoveHobby,
+  } = useFieldArray({
+    control,
+    name: 'hobbies',
+  });
+  const navigate = useNavigate();
 
-    if (user.name.length < 3 || user.name.length > 25) {
-      setUsernameError('Name must be within 3-25 characters');
-      return true;
-    } else {
-      setUsernameError('');
-    }
-
-    if (user.email.length === 0) {
-      setEmailError('This field cannot be empty');
-      return true;
-    } else if (!user.email.match(emailRegex)) {
-      setEmailError('Must be a valid email');
-      return true;
-    } else {
-      setEmailError('');
-    }
-
-    if (user.address.city.length === 0) {
-      setAddressError('This field cannot be empty');
-      return true;
-    } else {
-      setAddressError('');
-    }
-
-    if (user.phone.length === 0) {
-      setPhoneError('This field cannot be empty');
-      return true;
-    } else {
-      setPhoneError('');
-    }
-
-    return false;
-  };
-
-  const postHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const user = {
-      id,
-      name: username,
-      email,
-      address: { city: address },
-      phone,
-      hobbies: hobbies,
-    };
+  const onSubmit: SubmitHandler<IUser> = (formdata) => {
+    const user = { ...formdata, id };
     console.log(user);
-
     try {
-      if (editUser) {
+      const isEdit = Object.values(editUser).every((item) => !!item);
+      if (isEdit) {
         update(editUser.id, user);
         setUsers((prev) => {
           let filteredUsers = prev.filter((user) => user.id !== editUser.id);
           return [...filteredUsers, { ...user, id: editUser.id }];
         });
+        setEditUser(defaultUser);
+        navigate('/users');
         toast.success('User edited successfully', { autoClose: 1000 });
-        setUsername('');
-        setEmail('');
-        setAddress('');
-        setPhone('');
-        setHobbies([{ id: 1, value: '' }]);
       } else {
-        if (hasValidationError(user)) {
-          return;
-        }
         create(user).catch((err) => console.error('create user error', err));
         setUsers((prev) => [...prev, user]);
         id++;
+        navigate('/users');
         toast.success('User created successfully', { autoClose: 1000 });
-        setUsername('');
-        setEmail('');
-        setAddress('');
-        setPhone('');
-        setHobbies([{ id: 1, value: '' }]);
       }
     } catch (error: any) {
       console.error('post user error', error.message);
     }
   };
 
-  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    switch (e.target.name) {
-      case 'username':
-        setUsername(e.target.value);
-        break;
-      case 'email':
-        setEmail(e.target.value);
-        break;
-      case 'address':
-        setAddress(e.target.value);
-        break;
-      case 'phone':
-        setPhone(e.target.value);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const hobbyChangeHandler = (
-    id: number,
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const updatedHobbies = hobbies.map((hobby) => {
-      if (hobby.id === id) {
-        return { ...hobby, value: e.target.value };
-      }
-      return hobby;
-    });
-    setHobbies(updatedHobbies);
-  };
-
-  const addHobbyHandler = (id: number) => {
-    const newId = Math.max(...hobbies.map((hobby) => hobby.id)) + 1;
-    const updatedHobbies = [...hobbies];
-    updatedHobbies.splice(id, 0, { id: newId, value: '' });
-    setHobbies(updatedHobbies);
-  };
-
-  const removeHobbyHandler = (id: number) => {
-    const filteredHobbies = hobbies.filter((hobby) => hobby.id !== id);
-    setHobbies(filteredHobbies);
-  };
-
-  useEffect(() => {
-    if (editUser) {
-      setUsername(editUser.name);
-      setEmail(editUser.email);
-      setAddress(editUser.address.city);
-      setPhone(editUser.phone);
-      setHobbies(editUser.hobbies ?? [{ id: 1, value: '' }]);
-    }
-  }, [editUser]);
-
   return (
-    <form className='form-wrapper' onSubmit={postHandler}>
-      <Input
+    <Box
+      as='form'
+      borderTop='8px solid'
+      borderColor='purple.500'
+      boxShadow='2xl'
+      borderRadius='lg'
+      width='full'
+      p={24}
+      display='grid'
+      gridTemplateColumns='repeat(auto-fit, minmax(350px, 1fr))'
+      gap={8}
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <FormInput
         type='text'
-        name='username'
         label='Name'
         placeholder='Enter name'
-        value={username}
-        onChange={changeHandler}
-        error={usernameError}
+        error={errors?.username?.message}
+        {...register('username')}
       />
-      <Input
+      <FormInput
         type='email'
-        name='email'
         label='Email'
         placeholder='Enter e-mail address'
-        value={email}
-        onChange={changeHandler}
-        error={emailError}
+        error={errors?.email?.message}
+        {...register('email')}
       />
-      <Input
+      <FormInput
         type='text'
-        name='address'
         label='Address'
         placeholder='Enter home address'
-        value={address}
-        onChange={changeHandler}
-        error={addressError}
+        error={errors?.address?.message}
+        {...register('address')}
       />
-      <Input
+      <FormInput
         type='tel'
-        name='phone'
         label='Enter phone number'
         placeholder='Enter phone number'
-        value={phone}
-        onChange={changeHandler}
-        error={phoneError}
+        error={errors?.phone?.message}
+        {...register('phone')}
       />
 
-      {hobbies.map((hobby) => (
-        <div
+      {hobbies.map((hobby, index) => (
+        <HobbiesFormInput
           key={hobby.id}
-          style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
-        >
-          <Input
-            type='text'
-            name='hobby'
-            label='Hobby'
-            placeholder='Enter hobby'
-            value={hobby.value}
-            onChange={(e) => hobbyChangeHandler(hobby.id, e)}
-            error=''
-          />
-          <button
-            type='button'
-            className='btn'
-            style={{
-              height: '30px',
-              width: '10px',
-              borderRadius: '10px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            onClick={() => addHobbyHandler(hobby.id)}
-          >
-            +
-          </button>
-          {hobby.id !== 1 && (
-            <button
-              type='button'
-              className='btn'
-              style={{
-                height: '30px',
-                width: '10px',
-                borderRadius: '10px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onClick={() => removeHobbyHandler(hobby.id)}
-            >
-              -
-            </button>
-          )}
-        </div>
+          hobby={hobby}
+          index={index}
+          onAddHobby={onAddHobby}
+          onRemoveHobby={onRemoveHobby}
+          {...register(`hobbies.${index}.value`)}
+        />
       ))}
 
-      <button className='btn' type='submit' style={{ width: '200px' }}>
+      <Button type='submit' h='50px' alignSelf='end' colorScheme='purple'>
         Submit
-      </button>
-    </form>
+      </Button>
+    </Box>
   );
 };
 export default Form;

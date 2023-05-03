@@ -1,15 +1,23 @@
-import React, { SetStateAction, Dispatch } from 'react';
-import { remove } from '../../services/UserServices';
+import {
+  Box,
+  Spinner,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react';
+import React, { useContext } from 'react';
 import UserRow from './UserRow';
-import { toast } from 'react-toastify';
+import { UsersContext } from '../context/usersContext';
 
 export interface IUser {
   id: number;
-  name: string;
+  username: string;
   email: string;
-  address: {
-    city: string;
-  };
+  address: string;
   phone: string;
   hobbies: {
     id: number;
@@ -24,67 +32,78 @@ const Columns = [
   'Address',
   'Phone',
   'Hobbies',
-  'Delete',
-  'Edit',
+  'CTA',
 ] as const;
 
 type UsersTableProps = {
   users: IUser[];
-  setUsers: Dispatch<SetStateAction<IUser[]>>;
-  onEdit: (id: number) => void;
 };
 
-const UsersTable: React.FC<UsersTableProps> = ({ users, setUsers, onEdit }) => {
-  const deleteHandler = async (id: number) => {
-    try {
-      remove(id);
-      const filteredData = users.filter((user: IUser) => user.id !== id);
-      setUsers(filteredData);
-      toast.success(`Deleted user with id: ${id}`, { autoClose: 1000 });
-    } catch (error: any) {
-      console.error('delete user error', error.message);
-    }
-  };
+const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
+  const { isLoading } = useContext(UsersContext);
 
   return (
-    <table>
-      <thead>
-        <tr style={{ fontWeight: 'bold' }}>
+    <Table variant='striped' colorScheme='purple' size='sm'>
+      <Thead>
+        <Tr>
           {Columns.map((column, index) => (
-            <td key={index} className='table-heading'>
+            <Th
+              key={index}
+              textAlign='center'
+              color='purple.800'
+              fontWeight='bold'
+              fontSize='md'
+              py={4}
+            >
               {column}
-            </td>
+            </Th>
           ))}
-        </tr>
-      </thead>
+        </Tr>
+      </Thead>
 
-      <tbody>
+      <Tbody>
         {users.length > 0 ? (
           users.map((user: IUser) => (
             <UserRow
               key={user.id}
+              users={users}
               id={user.id}
-              name={user.name}
+              username={user.username}
               email={user.email}
               address={user.address}
               phone={user.phone}
               hobbies={user.hobbies}
-              onDelete={deleteHandler}
-              onEdit={onEdit}
             />
           ))
+        ) : isLoading ? (
+          <Tr>
+            <Td colSpan={Columns.length} textAlign='center' height='400px'>
+              <Box>
+                <Spinner
+                  thickness='4px'
+                  speed='0.65s'
+                  emptyColor='gray.200'
+                  color='purple.400'
+                  size='xl'
+                />
+                <Text>Loading...</Text>
+              </Box>
+            </Td>
+          </Tr>
         ) : (
-          <tr
-            style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-            }}
-          >
-            <td colSpan={Columns.length}>No results found.</td>
-          </tr>
+          <Tr>
+            <Td
+              colSpan={Columns.length}
+              textAlign='center'
+              fontSize='lg'
+              fontWeight='semibold'
+            >
+              No results found.
+            </Td>
+          </Tr>
         )}
-      </tbody>
-    </table>
+      </Tbody>
+    </Table>
   );
 };
 export default UsersTable;
