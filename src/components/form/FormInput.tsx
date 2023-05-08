@@ -16,8 +16,6 @@ type FormInputProps = {
 
 const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
   ({ type, label, placeholder, error, ...rest }, ref) => {
-    console.log(error);
-
     return (
       <FormControl isRequired isInvalid={!!error}>
         <HStack spacing={2}>
@@ -27,6 +25,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
         <Input
           _active={{ borderColor: 'purple.500' }}
           _focus={{ borderColor: 'purple.500' }}
+          pl={type === 'tel' ? '90px' : ''}
           type={type}
           placeholder={placeholder}
           ref={ref}

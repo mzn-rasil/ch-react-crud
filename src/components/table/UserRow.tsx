@@ -10,15 +10,17 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
+  StackDivider,
   Td,
   Text,
   Tr,
   useDisclosure,
 } from '@chakra-ui/react';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon, ViewIcon } from '@chakra-ui/icons';
 import { remove } from '../../services/UserServices';
 import { UsersContext } from '../../context/usersContext';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 type UserRowProps = IUser & {
   users: IUser[];
@@ -31,11 +33,13 @@ const UserRow: React.FC<UserRowProps> = ({
   address,
   phone,
   hobbies,
+  geoLocation,
   users,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { setUsers, editHandler: onEdit } = useContext(UsersContext);
+  const navigate = useNavigate();
 
   const onDelete = async (id: number) => {
     try {
@@ -67,13 +71,24 @@ const UserRow: React.FC<UserRowProps> = ({
             ? hobbies.map((hobby) => hobby.value).join(', ')
             : '---'}
         </Td>
+        <Td textAlign='center'>{geoLocation}</Td>
         <Td textAlign='center'>
-          <Button size='sm' variant='ghost' onClick={onOpen}>
-            <Icon as={DeleteIcon} color='red.600' />
-          </Button>
-          |
-          <Button size='sm' variant='ghost' onClick={() => onEdit(id)}>
-            <Icon as={EditIcon} />
+          <HStack divider={<StackDivider borderColor='gray.800' />}>
+            <Button size='sm' variant='ghost' onClick={onOpen}>
+              <Icon as={DeleteIcon} color='red.600' />
+            </Button>
+            <Button size='sm' variant='ghost' onClick={() => onEdit(id)}>
+              <Icon as={EditIcon} />
+            </Button>
+          </HStack>
+        </Td>
+        <Td textAlign='center'>
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={() => navigate(`/users/${id}`)}
+          >
+            <Icon as={ViewIcon} />
           </Button>
         </Td>
       </Tr>

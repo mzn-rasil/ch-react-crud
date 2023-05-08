@@ -23,6 +23,7 @@ export interface IUser {
     id: number;
     value: string;
   }[];
+  geoLocation: string;
 }
 
 const Columns = [
@@ -32,7 +33,9 @@ const Columns = [
   'Address',
   'Phone',
   'Hobbies',
+  'Geolocation',
   'CTA',
+  'View',
 ] as const;
 
 type UsersTableProps = {
@@ -43,7 +46,13 @@ const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
   const { isLoading } = useContext(UsersContext);
 
   return (
-    <Table variant='striped' colorScheme='purple' size='sm'>
+    <Table
+      variant='striped'
+      colorScheme='purple'
+      size='sm'
+      minWidth='800px'
+      overflow='auto'
+    >
       <Thead>
         <Tr>
           {Columns.map((column, index) => (
@@ -73,6 +82,7 @@ const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
               address={user.address}
               phone={user.phone}
               hobbies={user.hobbies}
+              geoLocation={user.geoLocation}
             />
           ))
         ) : isLoading ? (

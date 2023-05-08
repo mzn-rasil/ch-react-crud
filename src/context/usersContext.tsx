@@ -9,9 +9,13 @@ import { IUser } from '../components/table/UsersTable';
 import { getAll } from '../services/UserServices';
 import { useNavigate } from 'react-router-dom';
 
-type IResponseUser = Omit<IUser, 'address'> & {
+type IResponseUser = Omit<IUser, 'address' | 'geoLocation'> & {
   address: {
     city: string;
+    geo: {
+      lat: string;
+      lng: string;
+    };
   };
 };
 
@@ -39,6 +43,7 @@ export const defaultUser = {
       value: '',
     },
   ],
+  geoLocation: '',
 };
 
 export const UsersContext = createContext<IUserContext>({
@@ -63,7 +68,7 @@ const UsersContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const editHandler = async (id: number) => {
+  const editHandler = (id: number) => {
     try {
       const user = users.find((user: IUser) => user.id === id) ?? defaultUser;
       setEditUser(user);
@@ -77,13 +82,16 @@ const UsersContextProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
     getAll()
       .then((users: IResponseUser[]) => {
-        const updatedUsers = users.map((user: IResponseUser) => ({
+        const updatedUsers = users.flatMap((user: IResponseUser) => ({
           id: user.id,
           username: user.username,
           email: user.email,
           address: user.address.city,
           phone: user.phone,
           hobbies: [{ id: 1, value: '' }],
+          geoLocation: `${Number(user.address.geo.lat).toFixed(2)}, ${Number(
+            user.address.geo.lng
+          ).toFixed(2)}`,
         }));
         setIsLoading(false);
         setUsers(updatedUsers);

@@ -11,6 +11,15 @@ const getAll = async () => {
   }
 };
 
+const getById = async (id: number) => {
+  try {
+    const { data } = await http.get(`/users/${id}`);
+    return data;
+  } catch (error) {
+    throw new Error((error as AxiosError).message);
+  }
+};
+
 const create = async (user: IUser) => {
   try {
     await http.post('/users', user);
@@ -35,4 +44,4 @@ const remove = async (id: number) => {
   }
 };
 
-export { getAll, create, update, remove };
+export { getAll, getById, create, update, remove };
